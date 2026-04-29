@@ -2,7 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { analyzeWithClaude } from "@/lib/claude";
 import type { AnalyzeRequest } from "@/types";
 
+// Extend Vercel serverless timeout — vision calls can take 20-30 s
+export const maxDuration = 60;
+
 export async function POST(request: NextRequest) {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return NextResponse.json(
+      { error: "ANTHROPIC_API_KEY is not configured on the server." },
+      { status: 500 }
+    );
+  }
+
   try {
     const body: AnalyzeRequest = await request.json();
 
@@ -17,9 +27,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(result);
   } catch (error) {
     console.error("Analyze error:", error);
-    return NextResponse.json(
-      { error: "Analysis failed. Please try again." },
-      { status: 500 }
-    );
+    const message =
+      error instanceof Error ? error.message : "Analysis failed. Please try again.";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

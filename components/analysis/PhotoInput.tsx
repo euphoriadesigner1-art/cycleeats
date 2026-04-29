@@ -10,7 +10,7 @@ interface PhotoInputProps {
 
 function resizeImage(
   file: File,
-  maxDim = 1024
+  maxDim = 800
 ): Promise<{ data: string; mediaType: "image/jpeg" | "image/png" | "image/webp" | "image/gif" }> {
   return new Promise((resolve, reject) => {
     const img = new Image();
