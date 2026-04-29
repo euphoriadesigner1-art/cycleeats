@@ -38,10 +38,12 @@ export interface OpenFoodFactsProduct {
 }
 
 export interface AnalyzeRequest {
-  input_method: "text" | "barcode" | "manual";
+  input_method: "text" | "barcode" | "manual" | "photo";
   meal_description?: string;
   product_data?: OpenFoodFactsProduct;
   composition?: NutritionComposition;
+  image_data?: string;       // base64-encoded image (no data: prefix)
+  image_media_type?: "image/jpeg" | "image/png" | "image/webp" | "image/gif";
   user_concern: string;
 }
 
@@ -65,7 +67,7 @@ export interface PCOSProfile {
 export interface MealLog {
   id: string;
   user_id: string;
-  input_method: "text" | "barcode" | "manual";
+  input_method: "text" | "barcode" | "manual" | "photo";
   meal_description: string | null;
   product_name: string | null;
   raw_composition: NutritionComposition | null;

@@ -55,6 +55,26 @@ Ingredients: ${c.ingredients_text ?? "not provided"}`;
   throw new Error("Invalid analyze request");
 }
 
+function buildPhotoMessages(req: AnalyzeRequest): Anthropic.MessageParam[] {
+  return [{
+    role: "user",
+    content: [
+      {
+        type: "image",
+        source: {
+          type: "base64",
+          media_type: req.image_media_type ?? "image/jpeg",
+          data: req.image_data!,
+        },
+      },
+      {
+        type: "text",
+        text: `User's primary PCOS concern: ${req.user_concern}. Adjust severity weighting accordingly (insulin_resistance → weight insulin_impact heavily; acne → weight androgen_risk; fertility → flag endocrine disruptors; weight → flag caloric density).\n\nThis image shows a food product's nutrition label or ingredients list. Extract every ingredient and all nutritional values you can read, then analyze them for PCOS suitability.`,
+      },
+    ],
+  }];
+}
+
 export function parseAnalysisResponse(text: string): AnalysisResult {
   // Strip any accidental markdown code fences
   const cleaned = text.replace(/^```json\n?/, "").replace(/\n?```$/, "").trim();
@@ -62,13 +82,16 @@ export function parseAnalysisResponse(text: string): AnalysisResult {
 }
 
 export async function analyzeWithClaude(req: AnalyzeRequest): Promise<AnalysisResult> {
-  const userMessage = buildUserMessage(req);
+  const isPhoto = req.input_method === "photo";
+  const messages: Anthropic.MessageParam[] = isPhoto
+    ? buildPhotoMessages(req)
+    : [{ role: "user", content: buildUserMessage(req) }];
 
   const response = await client.messages.create({
     model: "claude-sonnet-4-6",
     max_tokens: 1024,
     system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: userMessage }],
+    messages,
   });
 
   const text = response.content[0].type === "text" ? response.content[0].text : "";
@@ -76,13 +99,13 @@ export async function analyzeWithClaude(req: AnalyzeRequest): Promise<AnalysisRe
   try {
     return parseAnalysisResponse(text);
   } catch {
-    // Retry once
+    // Retry once with correction prompt
     const retry = await client.messages.create({
       model: "claude-sonnet-4-6",
       max_tokens: 1024,
       system: SYSTEM_PROMPT,
       messages: [
-        { role: "user", content: userMessage },
+        ...messages,
         { role: "assistant", content: text },
         { role: "user", content: "Your response was not valid JSON. Please return only the JSON object with no extra text." },
       ],

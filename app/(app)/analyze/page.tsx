@@ -4,11 +4,12 @@ import { createClient } from "@/lib/supabase/client";
 import { TextInput } from "@/components/analysis/TextInput";
 import { ManualForm } from "@/components/analysis/ManualForm";
 import { BarcodeScanner } from "@/components/analysis/BarcodeScanner";
+import { PhotoInput } from "@/components/analysis/PhotoInput";
 import { ResultCard } from "@/components/analysis/ResultCard";
 import { cn } from "@/lib/utils";
 import type { AnalysisResult, NutritionComposition, OpenFoodFactsProduct } from "@/types";
 
-type Tab = "text" | "barcode" | "manual";
+type Tab = "text" | "barcode" | "manual" | "photo";
 
 export default function AnalyzePage() {
   const [tab, setTab] = useState<Tab>("text");
@@ -107,10 +108,16 @@ export default function AnalyzePage() {
     await runAnalysis({ input_method: "manual", composition, user_concern: concern }, "Manual entry");
   }
 
+  async function handlePhoto(imageData: string, imageMediaType: "image/jpeg" | "image/png" | "image/webp" | "image/gif") {
+    const concern = await getUserConcern();
+    await runAnalysis({ input_method: "photo", image_data: imageData, image_media_type: imageMediaType, user_concern: concern }, "Photo label");
+  }
+
   const tabs: { id: Tab; label: string }[] = [
-    { id: "text", label: "Describe Meal" },
-    { id: "barcode", label: "Scan Barcode" },
-    { id: "manual", label: "Manual Entry" },
+    { id: "text", label: "Describe" },
+    { id: "barcode", label: "Barcode" },
+    { id: "manual", label: "Manual" },
+    { id: "photo", label: "Photo" },
   ];
 
   return (
@@ -137,6 +144,7 @@ export default function AnalyzePage() {
         {tab === "text" && <TextInput onSubmit={handleText} loading={loading} />}
         {tab === "barcode" && <BarcodeScanner onDetected={handleBarcode} loading={loading} />}
         {tab === "manual" && <ManualForm onSubmit={handleManual} loading={loading} />}
+        {tab === "photo" && <PhotoInput onSubmit={handlePhoto} loading={loading} />}
       </div>
       {error && <div className="bg-red-50 text-red-700 text-sm rounded-xl px-4 py-3">{error}</div>}
       {result && <ResultCard result={result} mealLabel={mealLabel} />}
