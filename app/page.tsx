@@ -1,101 +1,71 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Leaf, ScanLine, BarChart2, User } from "lucide-react";
 
-export default function Home() {
+export default function LandingPage() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-background">
+      <nav className="flex items-center justify-between px-6 py-4 max-w-5xl mx-auto">
+        <div className="flex items-center gap-2">
+          <Leaf className="text-primary" size={22} />
+          <span className="font-heading font-semibold text-stone-800">CycleEats</span>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        <div className="flex items-center gap-3">
+          <Link href="/login" className="text-sm text-stone-600 hover:text-stone-800 font-medium">Sign in</Link>
+          <Link href="/signup" className="text-sm bg-primary text-white px-4 py-2 rounded-xl font-medium hover:bg-primary/90 transition-colors">
+            Get started
+          </Link>
+        </div>
+      </nav>
+
+      <section className="max-w-3xl mx-auto px-6 py-20 text-center">
+        <div className="inline-flex items-center gap-2 bg-primary-soft text-primary text-xs font-medium px-3 py-1.5 rounded-full mb-6">
+          <Leaf size={12} />
+          AI-powered PCOS nutrition analysis
+        </div>
+        <h1 className="font-heading text-4xl sm:text-5xl font-semibold text-stone-800 leading-tight mb-4">
+          Eat smarter for <span className="text-primary">PCOS</span>
+        </h1>
+        <p className="text-stone-500 text-lg max-w-xl mx-auto mb-8 leading-relaxed">
+          Describe a meal, scan a barcode, or enter nutrition facts. CycleEats analyses every choice
+          against your specific PCOS concerns and tells you exactly what to swap.
+        </p>
+        <Link
+          href="/signup"
+          className="inline-flex items-center gap-2 bg-primary text-white text-base font-medium px-8 py-3.5 rounded-xl hover:bg-primary/90 transition-colors"
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          Start for free
+        </Link>
+      </section>
+
+      <section className="max-w-5xl mx-auto px-6 pb-20">
+        <div className="grid sm:grid-cols-3 gap-6">
+          {[
+            {
+              icon: ScanLine,
+              title: "3 Ways to Analyse",
+              body: "Describe your meal in plain English, scan a product barcode with your camera, or type in nutrition label values.",
+            },
+            {
+              icon: BarChart2,
+              title: "PCOS-Specific Scoring",
+              body: "Every meal gets scored 1–10 across insulin impact, androgen risk, inflammation, and fiber — tailored to your primary concern.",
+            },
+            {
+              icon: User,
+              title: "Your Profile, Your Weights",
+              body: "Tell CycleEats whether you're focused on insulin resistance, acne, fertility, or weight. The AI adjusts its analysis accordingly.",
+            },
+          ].map(({ icon: Icon, title, body }) => (
+            <div key={title} className="bg-white rounded-2xl p-6 border border-stone-100 shadow-sm">
+              <div className="w-10 h-10 bg-primary-soft rounded-xl flex items-center justify-center mb-4">
+                <Icon size={20} className="text-primary" />
+              </div>
+              <h3 className="font-heading font-semibold text-stone-800 mb-2">{title}</h3>
+              <p className="text-sm text-stone-500 leading-relaxed">{body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
