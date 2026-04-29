@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useRouter } from "next/navigation";
+import { LogOut } from "lucide-react";
 import type { PrimaryConcern } from "@/types";
 
 const concerns: { value: PrimaryConcern; label: string; description: string }[] = [
@@ -37,6 +38,12 @@ export default function ProfilePage() {
     }
     load();
   }, []);
+
+  async function handleLogout() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/login");
+  }
 
   async function handleSave() {
     setLoading(true);
@@ -99,6 +106,14 @@ export default function ProfilePage() {
       <Button onClick={handleSave} disabled={loading} size="lg">
         {saved ? "Saved!" : loading ? "Saving…" : "Save Profile"}
       </Button>
+
+      <button
+        onClick={handleLogout}
+        className="flex items-center justify-center gap-2 py-3 text-sm text-stone-400 hover:text-red-500 transition-colors"
+      >
+        <LogOut size={15} />
+        Log out
+      </button>
     </div>
   );
 }
